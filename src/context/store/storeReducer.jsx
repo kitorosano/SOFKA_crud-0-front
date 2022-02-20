@@ -4,6 +4,7 @@ import {
 	UPDATE_ITEM,
 	DELETE_ITEM,
 	GET_LIST,
+  SERVER_MESSAGE
 } from '../../types';
 
 export default (state, action) => {
