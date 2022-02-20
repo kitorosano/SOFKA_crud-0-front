@@ -4,7 +4,7 @@ import {
 	SELECT_ITEM,
 	UPDATE_ITEM,
 	DELETE_ITEM,
-	SAVE_LIST,
+	GET_LIST,
 } from '../../types';
 import StoreContext from './storeContext';
 import StoreReducer from './storeReducer';
@@ -15,6 +15,7 @@ const StoreProvider = (props) => {
 		list: [],
 		item: {},
 	};
+  /**TODO: message state for reading request errors*/
 
 	const [state, dispatch] = useReducer(StoreReducer, initialState);
 
@@ -23,43 +24,43 @@ const StoreProvider = (props) => {
 		const response = await fetch(HOST_API + '/todos');
 		const list = await response.json();
 
-		dispatch({ type: SAVE_LIST, list });
+		dispatch({ type: GET_LIST, payload: list });
 	};
 
 	// Selects the item to edit
 	const selectItem = (todo) => {
-		dispatch({ type: SELECT_ITEM, item: todo });
+		dispatch({ type: SELECT_ITEM, payload: todo });
+	};
+
+  // Adds item to the list
+	const addItem = async (newTodo) => {
+		const response = await fetch(HOST_API + '/todos', {
+			method: 'POST',
+			body: JSON.stringify(newTodo),
+			headers: { 'Content-Type': 'application/json' },
+		});
+		const todo = response.json();
+
+		dispatch({ type: ADD_ITEM, payload: todo });
+	};
+
+  // Updates item by id
+	const updateItem = async (id, newTodo) => {
+		const response = await fetch(HOST_API + `/todos/${id}`, {
+			method: 'PUT',
+			body: JSON.stringify(newTodo),
+			headers: { 'Content-Type': 'application/json' },
+		});
+		const todo = await response.json();
+
+		dispatch({ type: UPDATE_ITEM, payload: todo });
 	};
 
 	// Delete item by id
 	const deleteItem = async (id) => {
 		fetch(`${HOST_API}/todos/${id}`, {
 			method: 'DELETE',
-		}).then(() => dispatch({ type: DELETE_ITEM, id }));
-	};
-
-  // Adds item to the list
-	const addItem = async (request) => {
-		const response = await fetch(HOST_API + '/todos', {
-			method: 'POST',
-			body: JSON.stringify(request),
-			headers: { 'Content-Type': 'application/json' },
-		});
-		const todo = response.json();
-
-		dispatch({ type: ADD_ITEM, item: todo });
-	};
-
-  // Updates item by id
-	const updateItem = async (request) => {
-		const response = await fetch(HOST_API + `/todos/${request.id}`, {
-			method: 'PUT',
-			body: JSON.stringify(request),
-			headers: { 'Content-Type': 'application/json' },
-		});
-		const todo = await response.json();
-
-		dispatch({ type: UPDATE_ITEM, item: todo });
+		}).then(() => dispatch({ type: DELETE_ITEM, payload: id }));
 	};
 
 	return (

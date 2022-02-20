@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import StoreContext from '../context/store/storeContext';
 
-
 function List() {
 	const { list, getList, selectItem, deleteItem } = useContext(StoreContext);
 
@@ -10,27 +9,35 @@ function List() {
 	}, [list.length]);
 
 	return (
-		<table>
+		<table className='table table-striped table-hover'>
+			<caption>TODO List</caption>
 			<thead>
 				<tr>
-					<td>ID</td>
-					<td>Nombre</td>
-					<td>Descripcion</td>
-					<td>¿Está compleatado?</td>
+					<th scope='col'>#ID</th>
+					<th scope='col'>Nombre</th>
+					<th scope='col'>¿Está compleatado?</th>
+					<th scope='col'>Acciones</th>
 				</tr>
 			</thead>
 			<tbody>
 				{list.map((todo, i) => (
 					<tr key={i}>
-						<td>{todo.id}</td>
+						<th scope='row'>{todo.id}</th>
 						<td>{todo.name}</td>
-						<td>{todo.descripcion}</td>
 						<td>{todo.isComplete ? '✅' : '❌'}</td>
 						<td>
-							<button onClick={() => deleteItem(todo.id)}>Eliminar</button>
-						</td>
-						<td>
-							<button onClick={() => selectItem(todo)}>Editar</button>
+							<button
+								className='btn btn-secondary'
+								onClick={() => selectItem(todo)}
+							>
+								Editar
+							</button>{' '}
+							<button
+								className='btn btn-danger'
+								onClick={() => deleteItem(todo.id)}
+							>
+								Eliminar
+							</button>
 						</td>
 					</tr>
 				))}

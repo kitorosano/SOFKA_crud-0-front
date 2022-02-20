@@ -11,30 +11,30 @@ export default (state, action) => {
 		case GET_LIST:
 			return {
 				...state,
-				list: action.list,
+				list: action.payload,
 			};
 		case SELECT_ITEM:
 			return {
 				...state,
-				item: action.item,
+				item: action.payload,
 			};
 		case ADD_ITEM:
 			return {
 				...state,
-				list: [...state.list, action.item],
+				list: [...state.list, action.payload],
 			};
 		case UPDATE_ITEM:
 			return {
 				...state,
 				item: {},
 				list: state.list.map((item) =>
-					item.id === action.item.id ? action.item : item
+					item.id === action.payload.id ? action.payload : item
 				),
 			};
 		case DELETE_ITEM:
 			return {
 				...state,
-				list: state.list.filter((item) => item.id !== action.id),
+				list: state.list.filter((item) => item.id !== action.payload),
 			};
 		default:
 			return state;
