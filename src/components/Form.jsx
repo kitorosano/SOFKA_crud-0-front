@@ -2,35 +2,50 @@ import React, { useContext, useRef, useState } from 'react';
 import StoreContext from '../context/store/storeContext';
 
 function Form() {
-	const formRef = useRef(null);
+  // Store Context methods 
 	const { item: actualItem, addItem, updateItem } = useContext(StoreContext);
+
+  // Input name state
 	const [modifiedName, setModifiedName] = useState('');
+
+  // Reference on form element, for reset purpose
+	const formRef = useRef(null);
 
 	const onAdd = (ev) => {
 		ev.preventDefault();
+    
+    // if input is blank don't send
 		if (modifiedName === '') return;
 
-    const request ={
+    // Add new item to database
+		addItem({
 			name: modifiedName,
 			completed: false,
-		}
-    console.log(request)
-		addItem(request);
-
+		});
+    
+    // Clear state
 		setModifiedName('');
+
+    // Clear inputs
 		formRef.current.reset();
 	};
 
 	const onEdit = (ev) => {
 		ev.preventDefault();
+    // if input is blank don't send
 		if (modifiedName === '') return;
 
+    
+    // Update new item to database using id
 		updateItem(actualItem.id, {
 			name: modifiedName,
 			completed: actualItem.completed,
 		});
 
+    // Clear state
 		setModifiedName('');
+    
+    // Clear inputs
 		formRef.current.reset();
 	};
 

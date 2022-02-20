@@ -3,8 +3,7 @@ import {
 	SELECT_ITEM,
 	UPDATE_ITEM,
 	DELETE_ITEM,
-	GET_LIST,
-  SERVER_MESSAGE
+	GET_LIST
 } from '../../types';
 
 export default (state, action) => {

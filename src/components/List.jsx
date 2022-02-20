@@ -2,9 +2,11 @@ import React, { useContext, useEffect } from 'react';
 import StoreContext from '../context/store/storeContext';
 
 function List() {
+  // Store Context methods 
 	const { list, getList, selectItem, deleteItem } = useContext(StoreContext);
 
 	useEffect(() => {
+    // Get list at page start
 		getList();
 	}, [list.length]);
 
