@@ -1,30 +1,13 @@
 import React, { useContext, useEffect } from 'react';
 import StoreContext from '../context/store/storeContext';
 
-const HOST_API = 'http://localhost:8080/api';
 
 function List() {
-	const { state, dispatch } = useContext(StoreContext);
+	const { list, getList, selectItem, deleteItem } = useContext(StoreContext);
 
 	useEffect(() => {
-		fetch(HOST_API + '/todos')
-			.then((response) => response.json())
-			.then((list) => {
-				dispatch({ type: 'update-list', list });
-			});
-	}, [state.list.length, dispatch]);
-
-	const onDelete = (id) => {
-		fetch(HOST_API + '/' + id + '/todo', {
-			method: 'DELETE',
-		}).then((list) => {
-			dispatch({ type: 'delete-list', id });
-		});
-	};
-
-	const onEdit = (todo) => {
-		dispatch({ type: 'edit-item', item: todo });
-	};
+		getList();
+	}, [list.length]);
 
 	return (
 		<table>
@@ -37,17 +20,17 @@ function List() {
 				</tr>
 			</thead>
 			<tbody>
-				{state.list.map((todo, i) => (
+				{list.map((todo, i) => (
 					<tr key={i}>
 						<td>{todo.id}</td>
 						<td>{todo.name}</td>
 						<td>{todo.descripcion}</td>
 						<td>{todo.isComplete ? '✅' : '❌'}</td>
 						<td>
-							<button onClick={() => onDelete(todo.id)}>Eliminar</button>
+							<button onClick={() => deleteItem(todo.id)}>Eliminar</button>
 						</td>
 						<td>
-							<button onClick={() => onEdit(todo)}>Editar</button>
+							<button onClick={() => selectItem(todo)}>Editar</button>
 						</td>
 					</tr>
 				))}

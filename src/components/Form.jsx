@@ -1,60 +1,38 @@
 import React, { useContext, useRef, useState } from 'react';
 import StoreContext from '../context/store/storeContext';
 
-const HOST_API = 'http://localhost:8080/api';
 
 function Form() {
 	const formRef = useRef(null);
-	const {
-		dispatch,
-		state: { item },
-	} = useContext(StoreContext);
-	const [state, setState] = useState(item);
+	const { item: actualItem, addItem, updateItem } = useContext(StoreContext);
+	const [modifiedItem, setModifiedItem] = useState(actualItem);
 
 	const onAdd = (ev) => {
 		ev.preventDefault();
 
-		const request = {
-			name: state.name,
-			description: state.description,
+		addItem({
+			name: modifiedItem.name,
+			description: modifiedItem.description,
 			id: null,
 			isComplete: false,
-		};
+		});
 
-		fetch(HOST_API + '/todo', {
-			method: 'POST',
-			body: JSON.stringify(request),
-			headers: { 'Content-Type': 'application/json' },
-		})
-			.then((response) => response.json())
-			.then((todo) => {
-				dispatch({ type: 'add-item', item: todo });
-				setState({ name: '' });
-				formRef.current.reset();
-			});
+		setModifiedItem({ name: '' });
+		formRef.current.reset();
 	};
 
 	const onEdit = (ev) => {
 		ev.preventDefault();
 
-		const request = {
-			name: state.name,
-			description: state.description,
-			id: item.id,
-			isComplete: item.isComplete,
-		};
+		updateItem({
+			name: modifiedItem.name,
+			description: modifiedItem.description,
+			id: actualItem.id,
+			isComplete: actualItem.isComplete,
+		});
 
-		fetch(HOST_API + '/todo', {
-			method: 'PUT',
-			body: JSON.stringify(request),
-			headers: { 'Content-Type': 'application/json' },
-		})
-			.then((response) => response.json())
-			.then((todo) => {
-				dispatch({ type: 'update-item', item: todo });
-				setState({ name: '' });
-				formRef.current.reset();
-			});
+		setModifiedItem({ name: '' });
+		formRef.current.reset();
 	};
 
 	return (
@@ -62,10 +40,10 @@ function Form() {
 			<input
 				type='text'
 				name='name'
-				defaultValue={item.name}
-				onChange={(ev) => setState({ ...state, name: ev.target.value })}
+				defaultValue={actualItem.name}
+				onChange={(ev) => setModifiedItem({ ...modifiedItem, name: ev.target.value })}
 			/>
-			{item.id ? (
+			{actualItem.id ? (
 				<button onClick={onEdit}>Actualizar</button>
 			) : (
 				<button onClick={onAdd}>Agregar</button>
